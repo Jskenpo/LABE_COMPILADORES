@@ -72,24 +72,21 @@ def elementosLR0(gramatica):
                     index = simbolo[1].index('·')
                     nuevo_conjunto = cerradura(mover(conjunto, simbolo[1][index + 1], gramatica), gramatica)
                     nuevo_conjunto_str = conjunto_a_cadena(nuevo_conjunto)
-                    # Verificar si el estado ya existe
-                    estadoExistente = next((estado for estado in automata.states if conjunto_a_cadena(estado.productions) == nuevo_conjunto_str), None)
-                    if estadoExistente is None:
+                    if all(conjunto_a_cadena(estado.productions) != nuevo_conjunto_str for estado in automata.states):
                         nombreEstado = "I" + str(contador)
                         nuevoEstado = Estado(nombreEstado)
                         nuevoEstado.productions = nuevo_conjunto
                         automata.crearEstado(nuevoEstado)
                         nuevos_conjuntos.append(nuevo_conjunto)
                         contador += 1
-                    else:
-                        nuevoEstado = estadoExistente
-                    # Buscar el estado correspondiente al conjunto actual
                     estadoActual = next(estado for estado in automata.states if conjunto_a_cadena(estado.productions) == conjunto_a_cadena(conjunto))
+                    nuevoEstado = next((estado for estado in automata.states if conjunto_a_cadena(estado.productions) == nuevo_conjunto_str), None)
                     automata.crearTransicion(estadoActual, simbolo[1][index + 1], nuevoEstado)
+
         if not nuevos_conjuntos:
             break
-        else:
-            C.extend(nuevos_conjuntos)
+        C.extend(nuevos_conjuntos)
+
     return automata
 
 def graficarAutomata(automata, nombre):
@@ -98,7 +95,7 @@ def graficarAutomata(automata, nombre):
 
     # Flecha apuntando al estado inicial
     dot.node(automata.inicial.name, label=automata.inicial.name, shape='square')
-    dot.edge('', automata.inicial.name)
+    dot.edge('Inicio', automata.inicial.name)
 
     for estado in automata.states:
         # Mostrar el nombre del estado y las producciones

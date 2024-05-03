@@ -2,7 +2,7 @@
 digraph {
 	node [shape=square]
 	I0 [label=I0 shape=square]
-	"" -> I0
+	Inicio -> I0
 	I0 [label="I0
 S -> ·expression
 expression -> ·expressionPLUSterm
@@ -11,33 +11,6 @@ term -> ·termTIMESfactor
 term -> ·factor
 factor -> ·LPARENexpressionRPAREN
 factor -> ·ID" shape=square]
-	I11 [label="I11
-factor -> LPARENexpressionRPAREN·" shape=square]
-	I6 [label="I6
-expression -> expressionPLUS·term
-term -> ·termTIMESfactor
-term -> ·factor
-factor -> ·LPARENexpressionRPAREN
-factor -> ·ID" shape=square]
-	I3 [label="I3
-term -> factor·" shape=square]
-	I5 [label="I5
-factor -> ID·" shape=square]
-	I8 [label="I8
-factor -> LPARENexpression·RPAREN
-expression -> expression·PLUSterm" shape=square]
-	I10 [label="I10
-term -> termTIMESfactor·" shape=square]
-	I2 [label="I2
-expression -> term·
-term -> term·TIMESfactor" shape=square]
-	I7 [label="I7
-term -> termTIMES·factor
-factor -> ·LPARENexpressionRPAREN
-factor -> ·ID" shape=square]
-	I9 [label="I9
-expression -> expressionPLUSterm·
-term -> term·TIMESfactor" shape=square]
 	I4 [label="I4
 factor -> LPAREN·expressionRPAREN
 expression -> ·expressionPLUSterm
@@ -46,29 +19,56 @@ term -> ·termTIMESfactor
 term -> ·factor
 factor -> ·LPARENexpressionRPAREN
 factor -> ·ID" shape=square]
+	I10 [label="I10
+term -> termTIMESfactor·" shape=square]
+	I3 [label="I3
+term -> factor·" shape=square]
+	I5 [label="I5
+factor -> ID·" shape=square]
+	I6 [label="I6
+expression -> expressionPLUS·term
+term -> ·termTIMESfactor
+term -> ·factor
+factor -> ·LPARENexpressionRPAREN
+factor -> ·ID" shape=square]
+	I8 [label="I8
+factor -> LPARENexpression·RPAREN
+expression -> expression·PLUSterm" shape=square]
+	I7 [label="I7
+term -> termTIMES·factor
+factor -> ·LPARENexpressionRPAREN
+factor -> ·ID" shape=square]
+	I11 [label="I11
+factor -> LPARENexpressionRPAREN·" shape=square]
 	I1 [label="I1
 S -> expression·
 expression -> expression·PLUSterm" shape=square]
-	I6 -> I9 [label=term]
-	I8 -> I6 [label=PLUS]
-	I6 -> I4 [label=LPAREN]
-	I7 -> I5 [label=ID]
-	I4 -> I5 [label=ID]
-	I2 -> I7 [label=TIMES]
-	I4 -> I3 [label=factor]
-	I0 -> I4 [label=LPAREN]
-	I1 -> I6 [label=PLUS]
-	I0 -> I2 [label=term]
-	I9 -> I7 [label=TIMES]
-	I4 -> I8 [label=expression]
-	I7 -> I4 [label=LPAREN]
-	I4 -> I4 [label=LPAREN]
+	I9 [label="I9
+expression -> expressionPLUSterm·
+term -> term·TIMESfactor" shape=square]
+	I2 [label="I2
+expression -> term·
+term -> term·TIMESfactor" shape=square]
 	I6 -> I5 [label=ID]
-	I6 -> I3 [label=factor]
 	I0 -> I1 [label=expression]
+	I0 -> I4 [label=LPAREN]
+	I4 -> I3 [label=factor]
+	I6 -> I9 [label=term]
+	I4 -> I4 [label=LPAREN]
+	I7 -> I4 [label=LPAREN]
+	I2 -> I7 [label=TIMES]
+	I8 -> I6 [label=PLUS]
+	I0 -> I2 [label=term]
+	I6 -> I3 [label=factor]
 	I4 -> I2 [label=term]
-	I8 -> I11 [label=RPAREN]
+	I9 -> I7 [label=TIMES]
+	I4 -> I5 [label=ID]
 	I0 -> I5 [label=ID]
+	I6 -> I4 [label=LPAREN]
 	I7 -> I10 [label=factor]
+	I7 -> I5 [label=ID]
+	I1 -> I6 [label=PLUS]
+	I4 -> I8 [label=expression]
+	I8 -> I11 [label=RPAREN]
 	I0 -> I3 [label=factor]
 }

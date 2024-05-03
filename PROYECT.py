@@ -9,10 +9,6 @@ yapar = "yapar/prueba.yalp"
 
 symbols = read_var(yalex)
 
-print("Símbolos leídos del archivo")
-print (symbols)
-
-
 read_regdef(yalex)
 
 regular_dict = convert_to_dictionary(regular_elements)
