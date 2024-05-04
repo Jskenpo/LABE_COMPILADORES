@@ -37,11 +37,18 @@ def read_productions(filename):
 
     productions = {}
     current_production = None
+    read_productions = False
+    found_separator = False
 
     for line in lines:
         line = line.strip()
 
         if line == '%%':
+            read_productions = True
+            found_separator = True
+            continue
+
+        if not read_productions:
             continue
 
         if line.endswith(';'):
@@ -62,4 +69,8 @@ def read_productions(filename):
                 rules = [rule.strip().split() for rule in production_parts[1].strip().split('|') if rule.strip()]
                 productions[production_name] = [rule for rule in rules if rule]
 
-    return productions
+    if not found_separator:
+        print("No se encontró la sección de producciones (separador '%%')")
+        return productions, True
+
+    return productions, False

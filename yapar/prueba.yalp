@@ -12,7 +12,6 @@
 IGNORE WS
 
 %%
-
 expression:
     expression PLUS term
   | term

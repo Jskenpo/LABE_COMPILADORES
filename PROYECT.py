@@ -4,8 +4,8 @@ from prepare import *
 from Automata import *
 # ---------------------LECTURA DE YALEX ----------------------------
 
-yalex = "yalex/prueba.yal"
-yapar = "yapar/prueba.yalp"
+yalex = "yalex/slr-2.yal"
+yapar = "yapar/slr-2.yalp"
 
 symbols = read_var(yalex)
 
@@ -25,9 +25,13 @@ if result == True:
     print("Error en la lectura de tokens")
     exit()
 
-productions = read_productions(yapar)
+productions, separador = read_productions(yapar)
 print("Producciones leídas del archivo")
 print (productions)
+
+if separador == True:
+    print("Error en la lectura de producciones")
+    exit()
 
 # ---------------------GRAMATICA ARGUMENTADA ----------------------------
 
