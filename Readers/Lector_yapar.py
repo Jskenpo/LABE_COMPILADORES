@@ -39,9 +39,13 @@ def read_productions(filename):
     current_production = None
     read_productions = False
     found_separator = False
+    comment_pattern = r"/\*.*?\*/"
 
     for line in lines:
         line = line.strip()
+
+        # Eliminar comentarios de la línea
+        line = re.sub(comment_pattern, "", line)
 
         if line == '%%':
             read_productions = True

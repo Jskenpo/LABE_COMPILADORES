@@ -71,3 +71,32 @@ def mover(I, X, gramatica):
         if punto < len(produccion) - 1 and produccion[punto + 1] == X:
             J.append((no_terminal, produccion[:punto] + [X, '·'] + produccion[punto + 2:]))
     return cerradura(J, gramatica)
+
+grammar = [
+    ('S', ['·', 'expression']), 
+    ('expression', ['expression', 'PLUS', 'term']), 
+    ('expression', ['term']), 
+    ('term', ['term', 'TIMES', 'factor']), 
+    ('term', ['factor']), 
+    ('factor', ['LPAREN', 'expression', 'RPAREN']), 
+    ('factor', ['ID'])
+]
+
+def terminals(grammar, non_terminals):
+    terminals = set()
+    for production in grammar:
+        for symbol in production[1]:
+            if symbol != '·' and symbol not in non_terminals:
+                terminals.add(symbol)
+
+    return terminals
+
+def non_terminals(grammar):
+    non_terminals = set()
+    for production in grammar:
+        if production[0] == 'S':
+            continue
+        else :
+            non_terminals.add(production[0])
+
+    return non_terminals

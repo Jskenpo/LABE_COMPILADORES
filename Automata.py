@@ -24,8 +24,6 @@ class LRAutomata:
         self.inicial = state
 
 
-        
-
 #---------------------construccion de automata ----------------------------
 
 '''

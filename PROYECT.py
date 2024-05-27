@@ -2,10 +2,11 @@ from Readers.Lector_yalex import *
 from Readers.Lector_yapar import *
 from prepare import *
 from Automata import *
+from TablaSLR import *
 # ---------------------LECTURA DE YALEX ----------------------------
 
-yalex = "yalex/slr-2.yal"
-yapar = "yapar/slr-2.yalp"
+yalex = "yalex/prueba.yal"
+yapar = "yapar/prueba.yalp"
 
 symbols = read_var(yalex)
 
@@ -43,9 +44,28 @@ print(new_gramar)
 
 automata = elementosLR0(new_gramar)
 
-# ---------------------graficar AFD----------------------------
+# ---------------------FIRST Y FOLLOW----------------------------
 
-dot = graficarAutomata(automata, "AFD")
+# Ejemplo de uso
+non_terminals = non_terminals(new_gramar)
+print("No terminales")
+print(non_terminals)
 
-dot.render('AFD', format='png',view=True)
+terminals = terminals(new_gramar, non_terminals)
 
+
+print("Terminales")
+print(terminals)
+
+first = compute_first(new_gramar, non_terminals, terminals, new_gramar)
+follow = compute_follow(new_gramar, non_terminals, terminals, first)
+
+print("FIRST:")
+for non_terminal, first_set in first.items():
+    if non_terminal in non_terminals:
+        print(f"{non_terminal}: {', '.join(first_set)}")
+
+print("\nFOLLOW:")
+for non_terminal, follow_set in follow.items():
+    if non_terminal in non_terminals:
+        print(f"{non_terminal}: {', '.join(follow_set)}")
