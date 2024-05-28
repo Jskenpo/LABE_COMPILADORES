@@ -13,7 +13,7 @@ IGNORE WS
 
 %%
 expression:
-    expression PLUS term  /*este es un comentario*/
+    expression PLUS term  
   | term
 ;
 term:
