@@ -65,55 +65,63 @@ def compute_follow(grammar, non_terminals, start_symbol, first):
     return follow
 
 
+def construir_tabla_SLR(automata, follow, terminales, no_terminales, table_grammar):
+    action = defaultdict(dict)
+    goto = defaultdict(dict)
+
+    # enumerar las producciones que se encuentran en una lista 
+    productions = {}
+    contador = 1
+    for i in table_grammar:
+        elemento = i[1]
+        productions[contador] = elemento
+        contador += 1
+
+    print(productions)
+    
+    
+    for state in automata.states:
+        for prod in state.productions:
+            head, body = prod
+            dot_pos = body.index('·')
+            
+            # Regla de desplazamiento (shift)
+            if dot_pos < len(body) - 1 and body[dot_pos + 1] in terminales:
+                symbol = body[dot_pos + 1]
+                next_state = next(s for s in automata.states if (state, symbol, s) in automata.transitions)
+                action[state.name][symbol] = ('S', next_state.name)
+            
+            # Regla de reducción (reduce)
+            if dot_pos == len(body) - 1 and head != "S":
+                for symbol in follow[head]:
+                    #buscar en la gramatica el body de la produccion
+                    for key, value in productions.items():
+                        if value == body:
+                            action[state.name][symbol] = ('R', key)
+
+            
+            # Aceptación (accept)
+            if head == "S" and dot_pos == len(body) - 1:
+                action[state.name]['$'] = ('ACC',)
+        
+        # Rellenar tabla GOTO
+        for non_term in no_terminales:
+            next_state = next((s for s in automata.states if (state, non_term, s) in automata.transitions), None)
+            if next_state:
+                goto[state.name][non_term] = next_state.name
+    
+    return action, goto
 
 
-def construir_conjuntos_lr1(automata, gramatica, first_sets, follow_sets,no_terminales):
-    conjuntos_lr1 = {}
-    for estado in automata.states:
-        conjunto_lr1 = defaultdict(set)
-        for produccion in estado.productions:
-            produccion_tupla = tuple(produccion)
-            punto = produccion[1].index('·')
-            if punto < len(produccion[1]):
-                simbolo_siguiente = produccion[1][punto + 1]
-                if simbolo_siguiente in no_terminales :
-                    for terminal in first_sets[simbolo_siguiente]:
-                        conjunto_lr1[(produccion_tupla, terminal)].add(produccion_tupla)
-                    if '#' in first_sets[simbolo_siguiente]:
-                        for terminal in follow_sets[produccion[0]]:
-                            conjunto_lr1[(produccion_tupla, terminal)].add(produccion_tupla)
-                else:
-                    conjunto_lr1[(produccion_tupla, simbolo_siguiente)].add(produccion_tupla)
-            else:
-                for terminal in follow_sets[produccion[0]]:
-                    conjunto_lr1[(produccion_tupla, terminal)].add(produccion_tupla)
-        conjuntos_lr1[estado] = conjunto_lr1
-    return conjuntos_lr1
+        
 
-def construir_tabla_slr(automata, gramatica, conjuntos_lr1):
-    action_table = {}
-    goto_table = {}
-    for estado in automata.states:
-        action_table[estado] = {}
-        goto_table[estado] = {}
-        for produccion, terminal in conjuntos_lr1[estado]:
-            if produccion[1][-1] == '·':
-                if terminal == '$' and produccion[0] == gramatica.inicial:
-                    action_table[estado][terminal] = 'acc'
-                else:
-                    action_table[estado][terminal] = 'r' + str(gramatica.producciones.index(produccion))
-            else:
-                punto = produccion[1].index('·')
-                simbolo_siguiente = produccion[1][punto + 1]
-                if simbolo_siguiente in gramatica.terminales:
-                    action_table[estado][simbolo_siguiente] = 'shift'
-                else:
-                    goto_table[estado][simbolo_siguiente] = siguiente_estado(automata, estado, simbolo_siguiente)
-    return action_table, goto_table
-
-
-def siguiente_estado(automata, estado_actual, simbolo):
-    for transicion in automata.transitions:
-        if transicion[0] == estado_actual and transicion[1] == simbolo:
-            return transicion[2]
-    return None
+def imprimir_tabla_SLR(action, goto):
+    print("Tabla ACTION:")
+    for state in action:
+        for symbol in action[state]:
+            print(f"Action[{state}, {symbol}] = {action[state][symbol]}")
+    
+    print("\nTabla GOTO:")
+    for state in goto:
+        for non_term in goto[state]:
+            print(f"Goto[{state}, {non_term}] = {goto[state][non_term]}")

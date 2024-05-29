@@ -31,7 +31,7 @@ if separador == True:
 # ---------------------GRAMATICA ARGUMENTADA ----------------------------
 
 new_grammar = generar_gramatica_argumentada(productions)
-print("Gramática argumentada\n")
+print("Gramática aumentada\n")
 print(new_grammar)
 print ("\n")
 
@@ -43,9 +43,12 @@ automata = elementosLR0(new_grammar)
 
 # Ejemplo de uso
 non_terminals = non_terminals(new_grammar)
-
+print("No terminales: ", non_terminals)
 
 terminals = terminals(new_grammar, non_terminals)
+# Agregar el símbolo de fin de entrada
+terminals.add('$')
+print("Terminales: ", terminals)
 
 
 
@@ -63,17 +66,17 @@ print("\nFOLLOW sets:")
 for non_terminal in non_terminals:
     print(f"FOLLOW({non_terminal}) = {follow_set[non_terminal]}")
 
-    # Construir conjuntos LR(1)
-conjuntos_lr1 = construir_conjuntos_lr1(automata, new_grammar, first_set, follow_set, non_terminals)
+#eliminar la produccion s de la gramatica
+new_grammar.pop(0)
 
-# Construir action table y goto table
-action_table, goto_table = construir_tabla_slr(automata, new_grammar, conjuntos_lr1)
+#agregarle el · al final de todas las producciones
+for i in range(len(new_grammar)):
+    new_grammar[i] = (new_grammar[i][0], new_grammar[i][1] + ['·'])
 
-# Imprimir las tablas (o cualquier otra operación que desees realizar con ellas)
-print("Action Table:")
-for estado, acciones in action_table.items():
-    print(f"{estado.name}: {acciones}")
 
-print("\nGoto Table:")
-for estado, transiciones in goto_table.items():
-    print(f"{estado.name}: {transiciones}")
+# ---------------------TABLA SLR----------------------------
+
+# Construir las tablas SLR
+action, goto = construir_tabla_SLR(automata, follow_set, terminals, non_terminals, new_grammar)
+
+imprimir_tabla_SLR(action, goto)

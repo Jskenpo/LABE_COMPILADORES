@@ -6,6 +6,9 @@ class Estado:
         self.name = name
         self.productions = []
 
+    def __repr__(self):
+        return self.__str__()
+
 class LRAutomata:
     def __init__(self ):
         self.inicial = None
@@ -22,6 +25,11 @@ class LRAutomata:
 
     def setInicial(self, state):
         self.inicial = state
+
+    def imprimirEstado (self):
+        for estado in self.states:
+            print(estado.name)
+            print(estado.productions)
 
 
 #---------------------construccion de automata ----------------------------
