@@ -3,10 +3,11 @@ from Readers.Lector_yapar import *
 from prepare import *
 from Automata import *
 from TablaSLR import *
+from Parser import *
 # ---------------------LECTURA DE YALEX ----------------------------
 
 yalex = "yalex/prueba.yal"
-yapar = "yapar/prueba.yalp"
+yapar = "yapar/rr.yalp"
 
 symbols = read_var(yalex)
 
@@ -18,10 +19,10 @@ regular_dict = convert_to_dictionary(regular_elements)
 # ---------------------LECTURA DE YAPAR ----------------------------
 tokens, result = read_tokens(yapar, regular_dict)
 
-if result == True:
+'''if result == True:
     print("Error en la lectura de tokens")
     exit()
-
+'''
 productions, separador = read_productions(yapar)
 
 if separador == True:
@@ -31,6 +32,7 @@ if separador == True:
 # ---------------------GRAMATICA ARGUMENTADA ----------------------------
 
 new_grammar = generar_gramatica_argumentada(productions)
+gramatica = new_grammar
 print("Gramática aumentada\n")
 print(new_grammar)
 print ("\n")
@@ -80,3 +82,14 @@ for i in range(len(new_grammar)):
 action, goto = construir_tabla_SLR(automata, follow_set, terminals, non_terminals, new_grammar)
 
 imprimir_tabla_SLR(action, goto)
+
+# ---------------------ANALIZADOR SINTACTICO----------------------------
+# Lista de tokens para parsear (cadena de entrada)
+tokens = ['LPAREN', 'ID', 'PLUS', 'ID', 'RPAREN', '$']
+
+# Parsear los tokens usando el estado inicial
+result, errors = parse(tokens, action, goto, 'I0', gramatica)
+
+print("Result:", result)
+for error in errors:
+    print("Error:", error)

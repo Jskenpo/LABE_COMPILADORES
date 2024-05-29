@@ -65,6 +65,7 @@ def compute_follow(grammar, non_terminals, start_symbol, first):
     return follow
 
 
+
 def construir_tabla_SLR(automata, follow, terminales, no_terminales, table_grammar):
     action = defaultdict(dict)
     goto = defaultdict(dict)
@@ -79,7 +80,6 @@ def construir_tabla_SLR(automata, follow, terminales, no_terminales, table_gramm
 
     print(productions)
     
-    
     for state in automata.states:
         for prod in state.productions:
             head, body = prod
@@ -89,6 +89,8 @@ def construir_tabla_SLR(automata, follow, terminales, no_terminales, table_gramm
             if dot_pos < len(body) - 1 and body[dot_pos + 1] in terminales:
                 symbol = body[dot_pos + 1]
                 next_state = next(s for s in automata.states if (state, symbol, s) in automata.transitions)
+                if symbol in action[state.name] and action[state.name][symbol][0] == 'R':
+                    print(f"Conflicto shift/reduce en el estado {state.name} con el símbolo {symbol}")
                 action[state.name][symbol] = ('S', next_state.name)
             
             # Regla de reducción (reduce)
@@ -97,6 +99,10 @@ def construir_tabla_SLR(automata, follow, terminales, no_terminales, table_gramm
                     #buscar en la gramatica el body de la produccion
                     for key, value in productions.items():
                         if value == body:
+                            if symbol in action[state.name] and action[state.name][symbol][0] == 'S':
+                                print(f"Conflicto shift/reduce en el estado {state.name} con el símbolo {symbol}")
+                            elif symbol in action[state.name] and action[state.name][symbol][0] == 'R':
+                                print(f"Conflicto reduce/reduce en el estado {state.name} con el símbolo {symbol}")
                             action[state.name][symbol] = ('R', key)
 
             
