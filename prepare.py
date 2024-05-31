@@ -89,3 +89,16 @@ def non_terminals(grammar):
         non_terminals.add(production[0])
 
     return non_terminals
+
+def punto(grammar):
+    for i in range(len(grammar)):
+        grammar[i] = (grammar[i][0], grammar[i][1] + ['·'])
+
+    return grammar
+
+def quitarPunto(grammar):
+    for i in range(len(grammar)):
+        head, body = grammar[i]
+        grammar[i] = (head, body[:-1])
+
+    return grammar

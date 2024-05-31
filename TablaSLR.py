@@ -64,21 +64,28 @@ def compute_follow(grammar, non_terminals, start_symbol, first):
 
     return follow
 
-
-
-def construir_tabla_SLR(automata, follow, terminales, no_terminales, table_grammar):
-    action = defaultdict(dict)
-    goto = defaultdict(dict)
-
-    # enumerar las producciones que se encuentran en una lista 
+def indexGrammar(grammar):
     productions = {}
     contador = 1
-    for i in table_grammar:
+    for i in grammar:
         elemento = i[1]
         productions[contador] = elemento
         contador += 1
+    return productions
 
-    print(productions)
+def indexGrammar2(grammar):
+    productions = {}
+    contador = 1
+    for i in grammar:
+        productions[contador] = i  # Mantener la tupla (head, body)
+        contador += 1
+    return productions
+
+def construir_tabla_SLR(automata, follow, terminales, no_terminales, productions):
+    action = defaultdict(dict)
+    goto = defaultdict(dict)
+
+    
     
     for state in automata.states:
         for prod in state.productions:

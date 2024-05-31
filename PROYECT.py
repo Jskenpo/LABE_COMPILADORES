@@ -7,7 +7,7 @@ from Parser import *
 # ---------------------LECTURA DE YALEX ----------------------------
 
 yalex = "yalex/prueba.yal"
-yapar = "yapar/rr.yalp"
+yapar = "yapar/prueba.yalp"
 
 symbols = read_var(yalex)
 
@@ -70,26 +70,33 @@ for non_terminal in non_terminals:
 
 #eliminar la produccion s de la gramatica
 new_grammar.pop(0)
-
+gramatica = new_grammar
 #agregarle el · al final de todas las producciones
-for i in range(len(new_grammar)):
-    new_grammar[i] = (new_grammar[i][0], new_grammar[i][1] + ['·'])
 
+new_grammar = punto(new_grammar)
 
 # ---------------------TABLA SLR----------------------------
+productions = indexGrammar(new_grammar)
 
 # Construir las tablas SLR
-action, goto = construir_tabla_SLR(automata, follow_set, terminals, non_terminals, new_grammar)
+action, goto = construir_tabla_SLR(automata, follow_set, terminals, non_terminals, productions)
 
 imprimir_tabla_SLR(action, goto)
 
+gramatica = quitarPunto(gramatica)
+productions2 = indexGrammar2(gramatica)
+
+print("\n")
+print(productions)
+
+print("\n")
+print(productions2)
+
 # ---------------------ANALIZADOR SINTACTICO----------------------------
-# Lista de tokens para parsear (cadena de entrada)
-tokens = ['LPAREN', 'ID', 'PLUS', 'ID', 'RPAREN', '$']
-
-# Parsear los tokens usando el estado inicial
-result, errors = parse(tokens, action, goto, 'I0', gramatica)
-
-print("Result:", result)
-for error in errors:
-    print("Error:", error)
+# Ejemplo de uso
+input_tokens = ['LPAREN', 'ID', 'RPAREN', 'TIMES', 'ID']
+try:
+    result = parse(input_tokens, action, goto, productions2)
+    print(result)
+except SyntaxError as e:
+    print(e)
