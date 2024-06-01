@@ -7,8 +7,9 @@ def parse(input_tokens, action, goto, productions):
         state = stack[-1]
         token = tokens[index]
 
+        # Verificar si el token actual tiene una acción definida en el estado actual
         if token not in action[state]:
-            raise SyntaxError(f"Unexpected token '{token}' in state '{state}'")
+            raise SyntaxError(f"Syntactic Error: Unexpected token '{token}' in state '{state}'")
 
         action_value = action[state][token]
         action_type = action_value[0]
@@ -22,15 +23,16 @@ def parse(input_tokens, action, goto, productions):
             production_number = action_value[1]
             production = productions[production_number][1]
             head = productions[production_number][0]
-            body_length = len(production)  # Include the head of the production
+            body_length = len(production)  # Length of the body of the production
             stack = stack[:-2 * body_length]
             current_state = stack[-1]
-            #sa
             stack.append(head)
+
+            # Verificar si la transición GOTO está definida para el no terminal en el estado actual
             if head in goto[current_state]:
                 stack.append(goto[current_state][head])
             else:
-                raise SyntaxError(f"Unexpected non-terminal '{head}' in state '{current_state}'")
+                raise SyntaxError(f"Grammatical Error: Unexpected non-terminal '{head}' in state '{current_state}'")
         elif action_type == 'ACC':  # Accept
             return "Input accepted"
         else:

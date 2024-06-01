@@ -84,46 +84,45 @@ def indexGrammar2(grammar):
 def construir_tabla_SLR(automata, follow, terminales, no_terminales, productions):
     action = defaultdict(dict)
     goto = defaultdict(dict)
+    sr_conflicts = []  # Lista para almacenar conflictos shift/reduce
+    rr_conflicts = []  # Lista para almacenar conflictos reduce/reduce
 
-    
-    
     for state in automata.states:
         for prod in state.productions:
             head, body = prod
             dot_pos = body.index('·')
-            
+
             # Regla de desplazamiento (shift)
             if dot_pos < len(body) - 1 and body[dot_pos + 1] in terminales:
                 symbol = body[dot_pos + 1]
                 next_state = next(s for s in automata.states if (state, symbol, s) in automata.transitions)
                 if symbol in action[state.name] and action[state.name][symbol][0] == 'R':
-                    print(f"Conflicto shift/reduce en el estado {state.name} con el símbolo {symbol}")
+                    sr_conflicts.append((state.name, symbol))
                 action[state.name][symbol] = ('S', next_state.name)
-            
+
             # Regla de reducción (reduce)
             if dot_pos == len(body) - 1 and head != "S":
                 for symbol in follow[head]:
-                    #buscar en la gramatica el body de la produccion
                     for key, value in productions.items():
                         if value == body:
                             if symbol in action[state.name] and action[state.name][symbol][0] == 'S':
-                                print(f"Conflicto shift/reduce en el estado {state.name} con el símbolo {symbol}")
+                                sr_conflicts.append((state.name, symbol))
                             elif symbol in action[state.name] and action[state.name][symbol][0] == 'R':
-                                print(f"Conflicto reduce/reduce en el estado {state.name} con el símbolo {symbol}")
+                                rr_conflicts.append((state.name, symbol))
                             action[state.name][symbol] = ('R', key)
 
-            
             # Aceptación (accept)
             if head == "S" and dot_pos == len(body) - 1:
                 action[state.name]['$'] = ('ACC',)
-        
+
         # Rellenar tabla GOTO
         for non_term in no_terminales:
             next_state = next((s for s in automata.states if (state, non_term, s) in automata.transitions), None)
             if next_state:
                 goto[state.name][non_term] = next_state.name
-    
-    return action, goto
+
+    return action, goto, sr_conflicts, rr_conflicts
+
 
 
         

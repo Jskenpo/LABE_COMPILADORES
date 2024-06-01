@@ -7,7 +7,7 @@ from Parser import *
 # ---------------------LECTURA DE YALEX ----------------------------
 
 yalex = "yalex/prueba.yal"
-yapar = "yapar/prueba.yalp"
+yapar = "yapar/rr.yalp"
 
 symbols = read_var(yalex)
 
@@ -79,22 +79,27 @@ new_grammar = punto(new_grammar)
 productions = indexGrammar(new_grammar)
 
 # Construir las tablas SLR
-action, goto = construir_tabla_SLR(automata, follow_set, terminals, non_terminals, productions)
+action, goto, sr_conflicts, rr_conflicts = construir_tabla_SLR(automata, follow_set, terminals, non_terminals, productions)
+
+# Verificar y manejar conflictos
+if sr_conflicts or rr_conflicts:
+    if sr_conflicts:
+        print(f"Se encontraron conflictos shift/reduce en los siguientes estados y símbolos: {sr_conflicts}")
+    if rr_conflicts:
+        print(f"Se encontraron conflictos reduce/reduce en los siguientes estados y símbolos: {rr_conflicts}")
+    raise SystemExit("Conflictos encontrados en la gramática. Deteniendo la ejecución.")
+
 
 imprimir_tabla_SLR(action, goto)
 
 gramatica = quitarPunto(gramatica)
 productions2 = indexGrammar2(gramatica)
 
-print("\n")
-print(productions)
 
-print("\n")
-print(productions2)
 
 # ---------------------ANALIZADOR SINTACTICO----------------------------
 # Ejemplo de uso
-input_tokens = ['LPAREN', 'ID', 'RPAREN', 'TIMES', 'ID']
+input_tokens = ['LPAREN', 'ID', 'RPAREN', 'TIMES', 'ID', 'PLUS', 'ID']
 try:
     result = parse(input_tokens, action, goto, productions2)
     print(result)
